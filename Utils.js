@@ -45,18 +45,20 @@ function config(){
     return m_config;
 }
 
-function setConfig(x){
-    m_config = x;
-}
 var applicationManager;
 
 function setAppManager(x){
     applicationManager = x;
 }
 
+function loadConfig(){
+    console.log(applicationManager.loadConfig());
+    m_config = JSON.parse(applicationManager.loadConfig());
+}
+
 function setConfig(x, y){
     m_config[x] = y;
     m_config = m_config;
     applicationManager.saveConfig(JSON.stringify(m_config) );
-    console.log(JSON.stringify(m_config) );
+    //console.log(JSON.stringify(m_config) );
 }

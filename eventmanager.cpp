@@ -2,14 +2,14 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QSqlError>
-#include <QSqlQuery>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDateTime>
 
-EventManager::EventManager(QObject *parent) : QObject(parent)
-{
+EventManager::EventManager(QObject *parent) : QObject(parent) {
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("./events.db");
     establishConnection();
 }
 
@@ -125,11 +125,28 @@ bool EventManager::hasFileWithFingerprint(const QString &fingerprint) {
 }
 
 void EventManager::establishConnection() {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("./events.db");
     if (!db.open()) {
         qFatal("Cannot open database");
         return;
     }
     return;
+}
+
+void EventManager::interruptConnection() {
+    db.close();
+    return;
+}
+
+QUrl EventManager::dbPath(){
+    QFileInfo fi("./events.db");
+    return QUrl::fromLocalFile(fi.canonicalFilePath());
+}
+
+void EventManager::importDatabase(QUrl url) {
+    interruptConnection();
+    if (QFile::exists("./events.db")) {
+        QFile::remove("./events.db");
+    }
+    QFile::copy(url.toLocalFile(), "./events.db");
+    establishConnection();
 }

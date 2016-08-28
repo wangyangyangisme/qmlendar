@@ -148,7 +148,7 @@ Item {
         id: eventEditingPopup
         event: Utils.blankevent(new Date())
         onAccepted: {
-            console.log(JSON.stringify(event));
+            //console.log(JSON.stringify(event));
             eventManager.modify(JSON.stringify(event), action);
             grid.year = grid.year + 1;
             grid.year = grid.year - 1;

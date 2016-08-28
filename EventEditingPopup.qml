@@ -192,7 +192,7 @@ Dialog {
         MouseArea {
             id: dragMouseArea
             anchors.fill: parent
-            drag.target: draggable
+            drag.target: (Utils.config().drag === 1) ? draggable : undefined
         }
         Item {
             id: draggable

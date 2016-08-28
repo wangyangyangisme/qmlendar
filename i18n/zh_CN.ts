@@ -4,7 +4,7 @@
 <context>
     <name>DayGrid</name>
     <message>
-        <location filename="../DayGrid.qml" line="52"/>
+        <location filename="../DayGrid.qml" line="47"/>
         <source>File: %1</source>
         <translation>文件：%1</translation>
     </message>
@@ -78,31 +78,31 @@
         <translation>你确认要删除这个事件吗？</translation>
     </message>
     <message>
-        <location filename="../EventEditingPopup.qml" line="262"/>
+        <location filename="../EventEditingPopup.qml" line="260"/>
         <source>Pick color</source>
         <translation>选择颜色</translation>
     </message>
     <message>
-        <location filename="../EventEditingPopup.qml" line="228"/>
-        <location filename="../EventEditingPopup.qml" line="249"/>
+        <location filename="../EventEditingPopup.qml" line="226"/>
+        <location filename="../EventEditingPopup.qml" line="247"/>
         <source>Done</source>
         <translation>完成</translation>
     </message>
     <message>
-        <location filename="../EventEditingPopup.qml" line="297"/>
+        <location filename="../EventEditingPopup.qml" line="295"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
-        <location filename="../EventEditingPopup.qml" line="297"/>
+        <location filename="../EventEditingPopup.qml" line="295"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
         <location filename="../EventEditingPopup.qml" line="213"/>
-        <location filename="../EventEditingPopup.qml" line="229"/>
-        <location filename="../EventEditingPopup.qml" line="250"/>
-        <location filename="../EventEditingPopup.qml" line="298"/>
+        <location filename="../EventEditingPopup.qml" line="227"/>
+        <location filename="../EventEditingPopup.qml" line="248"/>
+        <location filename="../EventEditingPopup.qml" line="296"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -110,39 +110,45 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.qml" line="14"/>
+        <location filename="../main.qml" line="16"/>
         <source>Calendar Test</source>
         <translation>日历</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="36"/>
+        <location filename="../main.qml" line="38"/>
         <source>PageMonth</source>
         <translation>月历</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="53"/>
+        <location filename="../main.qml" line="55"/>
         <source>Drag</source>
         <translation>拖放</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="57"/>
+        <location filename="../main.qml" line="59"/>
         <source>Drag and drop enabled.</source>
         <translation>拖放已启用。</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="61"/>
+        <location filename="../main.qml" line="63"/>
         <source>Drag and drop disabled.</source>
         <translation>拖放已禁用。</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="67"/>
+        <location filename="../main.qml" line="70"/>
         <source>Langauge</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="84"/>
+        <location filename="../main.qml" line="87"/>
         <source>Lock</source>
         <translation>锁定</translation>
+    </message>
+    <message>
+        <location filename="../main.qml" line="104"/>
+        <location filename="../main.qml" line="122"/>
+        <source>Import/Export</source>
+        <translation>导入/导出</translation>
     </message>
 </context>
 </TS>

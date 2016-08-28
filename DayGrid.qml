@@ -25,7 +25,7 @@ Rectangle  {
         anchors.fill: parent
         onClicked: {
             grid.gridClicked(date);
-            console.log(date.toLocaleDateString() + "  Clicked.");
+            //console.log(date.toLocaleDateString() + "  Clicked.");
         }
     }
 
@@ -56,7 +56,7 @@ Rectangle  {
     DropArea {
         anchors.fill: parent
         onEntered: {
-            console.log(Utils.config().drag);
+            //console.log(Utils.config().drag);
             if (Utils.config().drag === 0){
                 drag.accepted = false;
                 return false;

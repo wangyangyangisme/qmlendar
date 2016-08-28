@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls.Material 2.0
 import QtQuick.Controls.Universal 2.0
 import Material 0.2
+import Material.ListItems 0.1 as ListItem
+import Material.Extras 0.1
 import "Utils.js" as Utils
 
 ApplicationWindow {
@@ -60,6 +62,7 @@ ApplicationWindow {
                         Utils.setConfig("drag", 0);
                         snackbar.open(qsTr("Drag and drop disabled."));
                     }
+                    page.refresh();
                 }
             },
             Action {
@@ -75,7 +78,7 @@ ApplicationWindow {
                         applicationManager.changeLangauge("en_US");
                     }
                     page.refresh();
-                    console.log(Qt.locale().name);
+                    //console.log(Qt.locale().name);
                 }
             },
             Action {
@@ -94,12 +97,19 @@ ApplicationWindow {
                     page.backgroundColor = (Utils.config().locked === 0) ? Theme.backgroundColor : "transparent";
                     page.refresh();
                 }
+            },
+            Action {
+                id: portButton
+                iconName: "communication/import_export"
+                name: qsTr("Import/Export")
+                onTriggered: {
+                    portDialog.show()
+                }
             }
         ]
         Connections {
             target: applicationManager
             onShortcutTriggered: {
-                console.log(name);
                 if (name === "lock") {
                     lockButton.trigger();
                 }
@@ -108,11 +118,51 @@ ApplicationWindow {
     }
 
     Dialog {
-        id: settingsDialog
+        id: portDialog
+        title: qsTr("Import/Export")
+        hasActions: false
+
+        ListItem.Standard {
+            action: Icon {
+                anchors.centerIn: parent
+                name: "editor/attach_file"
+            }
+            text: "events.db"
+
+            MouseArea {
+                id: dragMouseArea
+                anchors.fill: parent
+                drag.target: draggable
+            }
+            Item {
+                id: draggable
+                anchors.fill: parent
+                Drag.active: dragMouseArea.drag.active
+                Drag.hotSpot.x: 0
+                Drag.hotSpot.y: 0
+                Drag.dragType: Drag.Automatic
+                Drag.supportedActions: Qt.CopyAction
+                Drag.mimeData: {"text/uri-list": eventManager.dbPath()}
+                Drag.onDragFinished: {
+                    portDialog.close();
+                }
+            }
+            DropArea {
+                anchors.fill: parent
+                onDropped: {
+                    console.log(drop.urls[0]);
+                    eventManager.importDatabase(drop.urls[0]);
+                    page.refresh();
+                    portDialog.close();
+                }
+            }
+        }
     }
     Component.onCompleted: {
         Utils.setAppManager(applicationManager);
-        Utils.setConfig(JSON.parse(applicationManager.loadConfig() ) );
+        Utils.loadConfig();
+        page.refresh();
+        //Utils.setConfig(JSON.parse(applicationManager.loadConfig() ) );
     }
 
     onClosing: {
