@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDateTime>
 
 EventManager::EventManager(QObject *parent) : QObject(parent)
 {
@@ -40,8 +41,8 @@ bool event_react_to(QJsonObject a, QDateTime d){
 
 QString EventManager::eventsForDate(const QDate &date) {
     const QString queryStr = QString::fromUtf8("SELECT rowid, * FROM Event WHERE '%1' >= startDate AND '%1' <= endDate").arg(date.toString("yyyy-MM-dd"));
-    QSqlQuery query(queryStr);
-    if (!query.exec())
+    QSqlQuery query;
+    if (!query.exec(queryStr))
         qFatal("Query failed");
 
     QJsonArray events;
@@ -51,7 +52,7 @@ QString EventManager::eventsForDate(const QDate &date) {
         a["name"] = query.value("name").toString();
         a["type"] = query.value("type").toInt();
         a["mask"] = query.value("mask").toString();
-        a["color"] = query.value("color").toString();//QColor(query.value("color").toInt()).name(QColor::HexArgb);
+        a["color"] = query.value("color").toString();
         QDateTime startDate;
         startDate.setDate(query.value("startDate").toDate());
         startDate.setTime(QTime(0, 0).addSecs(query.value("startTime").toInt()));
@@ -64,8 +65,6 @@ QString EventManager::eventsForDate(const QDate &date) {
         if (event_react_to(a, QDateTime(date)) )
             events.append(a);
     }
-    qDebug() << queryStr;
-    qDebug() << QJsonDocument(events).toJson(QJsonDocument::Compact);
     return QJsonDocument(events).toJson(QJsonDocument::Compact);
 }
 
@@ -101,43 +100,36 @@ void EventManager::modify(const QString &eventString, const QString &action) {
         queryStr = QString::fromUtf8("DELETE FROM Event WHERE rowid = %1").arg(QString::number(m_id));
     }
     QSqlQuery query;
-    qDebug() << queryStr;
     if (!query.exec(queryStr)){
         qDebug() << query.lastError();
         qFatal("Query failed");
     }
-}
-
-void EventManager::debug() {
-    for (int i = 1; i <= 31; ++ i){
-        QDate tmp(2016,8,i);
-        qDebug() << tmp << ":";
-        qDebug() << eventsForDate(tmp);
-        auto qs = QJsonDocument::fromJson(eventsForDate(tmp).toUtf8()).array();
-        for (auto i : qs){
-            qDebug() << i.toObject()["name"].toString() << ";";
+    if (action == "delete" && m_type == 9) {
+        if (!hasFileWithFingerprint(m_mask) ) {
+            qobject_cast<AttachmentManager*>(attachmentManager)->removeFile(m_mask);
         }
-        //qDebug() << endl;
     }
 }
 
-void EventManager::establishConnection(){
+bool EventManager::hasFileWithFingerprint(const QString &fingerprint) {
+      const QString queryStr = QString::fromUtf8("SELECT rowid FROM Event WHERE type = 9 AND mask = '%1' ").arg(fingerprint);
+      QSqlQuery query;
+      if (!query.exec(queryStr))
+          qFatal("Query failed");
+      if (query.next()){
+          return true;
+      }
+      else {
+          return false;
+      }
+}
+
+void EventManager::establishConnection() {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./events.db");
     if (!db.open()) {
         qFatal("Cannot open database");
         return;
     }
-
-    QSqlQuery query;
-    // We store the time as seconds because it's easier to query.
-    /*query.exec("create table Event (name TEXT, type INT, mask TEXT, startDate DATE, startTime INT, endDate DATE, endTime INT, color TEXT)");
-    query.exec("insert into Event values('Grocery shopping', 0, '', '2016-08-01', 36000, '2016-08-01', 39600, 'red')");
-    query.exec("insert into Event values('Ice skating', 1, '0 2 4 6 ', '2016-08-01', 57600, '2026-08-01', 61200, 'cyan')");
-    query.exec("insert into Event values('Doctor''s appointment', 0, '', '2016-08-15', 57600, '2016-08-15', 63000, 'amber')");
-    query.exec("insert into Event values('Conference', 0, '', '2016-08-24', 32400, '2016-08-28', 61200, 'deepOrange')");
-    query.exec("insert into Event values('Rock', 2, '21', '2016-01-01', 32400, '2017-01-21', 61200, 'grey')");
-    query.exec("insert into Event values('a.pdf', 9, '', '2016-08-21', 32400, '2017-01-21', 61200, 'indigo')");*/
-
     return;
 }

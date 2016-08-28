@@ -1,3 +1,4 @@
+.pragma library
 
 function pr(){
     for (var i in arguments)
@@ -5,22 +6,10 @@ function pr(){
     return arguments[0];
 }
 
-/*function blankevent(){
-    return {
-        id: 0,
-        name: "rubbish",
-        type: 1,
-        mask: "0 2 4 6",
-        color: "pink",
-        startDate: new Date(),
-        endDate: new Date((new Date() ).setMonth(10))
-    }
-}*/
-
 function blankevent(date){
     return {
         id: -1,
-        name: "None",
+        name: "",
         type: 0,
         mask: "",
         color: "red",
@@ -34,7 +23,7 @@ function daysInMonth(month,year) {
 }
 
 function getDayItems(date){
-    var l = Utils.daysInMonth(date.getYear(), date.getMonth() );
+    var l = daysInMonth(date.getYear(), date.getMonth() );
     var x = [];
     for (var i = 1; i < l; ++ i){
         x.push(i);
@@ -42,4 +31,32 @@ function getDayItems(date){
     return x;
 }
 
-//function transfer_color(, opacity)
+function addOpacity(color, opacity) {
+    return Qt.rgba(color.r, color.g, color.b, color.a * opacity);
+}
+
+var m_config = {
+    "lang": 0,
+    "locked": 0,
+    "drag": 1
+};
+
+function config(){
+    return m_config;
+}
+
+function setConfig(x){
+    m_config = x;
+}
+var applicationManager;
+
+function setAppManager(x){
+    applicationManager = x;
+}
+
+function setConfig(x, y){
+    m_config[x] = y;
+    m_config = m_config;
+    applicationManager.saveConfig(JSON.stringify(m_config) );
+    console.log(JSON.stringify(m_config) );
+}

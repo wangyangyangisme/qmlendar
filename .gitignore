@@ -60,4 +60,5 @@ CMakeLists.txt.user
 *.qm
 
 events.db
+config.json
 storage

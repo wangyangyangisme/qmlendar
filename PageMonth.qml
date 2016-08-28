@@ -9,7 +9,15 @@ import "Utils.js" as Utils
 
 Item {
     id: pageMonth
+    width: 920
+    height: 550
     property date selectedDate
+    property bool locked : Utils.config().locked
+    onLockedChanged: {
+        selectorRow.visible = (locked === false);
+        grid.year = grid.year + 1;
+        grid.year = grid.year - 1;
+    }
     onSelectedDateChanged: {
         grid.month = selectedDate.getMonth();
         monthbox.currentIndex = grid.month;
@@ -21,20 +29,37 @@ Item {
 
     Column {
         RowLayout {
+            id: selectorRow
             IconButton {
                 iconName: "navigation/chevron_left"
                 onClicked:
                     selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, selectedDate.getDate());
             }
-            MySpinBox {
+            SpinBox {
                 id: yearbox
                 from: 1970
                 to: 4712
                 editable: true
+                up.indicator: IconButton {
+                    iconName: "content/add"
+                    x: yearbox.mirrored ? 0 : parent.width - width
+                    z: 10
+                    height: parent.height
+                    implicitWidth: 40
+                    implicitHeight: 40
+                }
+                down.indicator: IconButton {
+                    iconName: "content/remove"
+                    x: yearbox.mirrored ? parent.width - width : 0
+                    z: 10
+                    height: parent.height
+                    implicitWidth: 40
+                    implicitHeight: 40
+                }
                 textFromValue: function(value) {
                     return value;
                 }
-                onValueChanged: function(){
+                onValueChanged: {
                     var newDate = new Date(selectedDate);
                     newDate.setFullYear(yearbox.value);
                     selectedDate = newDate;
@@ -53,7 +78,7 @@ Item {
                 model: monthModel
                 textRole: "key"
                 Layout.preferredWidth: 0.4 * parent.width
-                onActivated: function(index){
+                onActivated: {
                     var newDate = new Date(selectedDate);
                     newDate.setMonth(currentIndex);
                     selectedDate = newDate;
@@ -64,6 +89,7 @@ Item {
                 onClicked:
                     selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, selectedDate.getDate());
             }
+            visible: (locked === false)
         }
         ColumnLayout {
             Layout.fillWidth: true
@@ -86,9 +112,10 @@ Item {
                 delegate: DayGrid {
                     text: model.day
                     date: model.date
+                    locked: pageMonth.locked
                     eventList: JSON.parse(eventManager.eventsForDate(model.date))
                     state: model.month === grid.month ? (model.date.getDate() === selectedDate.getDate() ? "selected" : "normal") : "disabled"
-                    onGridClicked: function(date){
+                    onGridClicked: {
                         var x = (selectedDate.getTime() === date.getTime());
                         selectedDate = date;
                         if (x) {
@@ -98,14 +125,14 @@ Item {
                             eventEditingPopup.show();
                         }
                     }
-                    onEventClicked: function(date, event){
+                    onEventClicked: {
                         selectedDate = date;
                         eventEditingPopup.close();
                         eventEditingPopup.event = event;
                         eventEditingPopup.action = "edit";
                         eventEditingPopup.show();
                     }
-                    onEventChanged: function(){
+                    onEventChanged: {
                         grid.year = grid.year + 1;
                         grid.year = grid.year - 1;
                     }
@@ -113,14 +140,14 @@ Item {
             }
         }
     }
-    Component.onCompleted: function(){
+    Component.onCompleted: {
         selectedDate = new Date();
     }
 
     EventEditingPopup {
         id: eventEditingPopup
         event: Utils.blankevent(new Date())
-        onAccepted: function(){
+        onAccepted: {
             console.log(JSON.stringify(event));
             eventManager.modify(JSON.stringify(event), action);
             grid.year = grid.year + 1;
@@ -130,22 +157,23 @@ Item {
     }
 
     Snackbar {
-        id: snackbar
+        id: pageSnackbar
     }
     ActionButton {
+        id: addButton
         anchors {
             right: parent.right
-            bottom: snackbar.top
+            bottom: pageSnackbar.top
             margins: Units.dp(32)
         }
-
+        z: 100
         action: Action {
             id: addContent
-            onTriggered: function(){
+            onTriggered: {
                 eventEditingPopup.close();
                 eventEditingPopup.event = Utils.blankevent(selectedDate);
                 eventEditingPopup.action = "add";
-                eventEditingPopup.show()
+                eventEditingPopup.show();
             }
         }
         iconName: "content/add"

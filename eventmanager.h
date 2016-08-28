@@ -2,18 +2,18 @@
 #define EVENTMANAGER_H
 
 #include <QObject>
-#include "eventitem.h"
+#include <attachmentmanager.h>
 
 class EventManager : public QObject
 {
     Q_OBJECT
 public:
+    QObject* attachmentManager;
     explicit EventManager(QObject *parent = 0);
-    void debug();
     Q_INVOKABLE QString eventsForDate(const QDate &date);
     Q_INVOKABLE void modify(const QString &event, const QString &action);
+    bool hasFileWithFingerprint(const QString &fingerprint);
     static void establishConnection();
-
 signals:
 
 public slots:

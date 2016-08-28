@@ -1,0 +1,3 @@
+[submodule "thirdparty/qglobalshortcut"]
+	path = thirdparty/qglobalshortcut
+	url = https://github.com/mitei/qglobalshortcut.git

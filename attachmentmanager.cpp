@@ -20,8 +20,7 @@ AttachmentManager::AttachmentManager(QObject *parent) : QObject(parent)
 
 }
 
-QString AttachmentManager::AttachFile(QDateTime date, QUrl url) {
-    //if (!url.isLocalFile()) return 1;
+void AttachmentManager::AttachFile(QDateTime date, QUrl url) {
     QFileInfo fi(url.toLocalFile() );
     QString filename = fi.fileName();
     QString fingerPrint = QString(fileSHA256(url.toLocalFile()).toHex()).left(8);
@@ -31,8 +30,7 @@ QString AttachmentManager::AttachFile(QDateTime date, QUrl url) {
     QDir dir("./storage/" + fingerPrint);
     if (!dir.exists()) dir.mkpath(".");
     QFile::copy(url.toLocalFile(), "./storage/" + fingerPrint + "/" + filename);
-    //qDebug() << json;
-    return json;
+    qobject_cast<EventManager*>(eventManager)->modify(json, "add");
 }
 
 QUrl AttachmentManager::getFileURI(QString filename, QString fingerPrint) {
@@ -40,7 +38,7 @@ QUrl AttachmentManager::getFileURI(QString filename, QString fingerPrint) {
     return QUrl::fromLocalFile(fi.canonicalFilePath());
 }
 
-void AttachmentManager::removeFile(QString name, QString fingerPrint) {
+void AttachmentManager::removeFile(QString fingerPrint) {
     QDir dir("./storage/" + fingerPrint);
     dir.removeRecursively();
 }

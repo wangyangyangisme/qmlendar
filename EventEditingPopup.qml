@@ -30,12 +30,10 @@ Dialog {
                 id: nameField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.7
-                //anchors.centerIn: parent
-                //width: parent.width * 0.7
                 text: event.name
                 placeholderText: qsTr("Event name")
                 floatingLabel: true
-                onEditingFinished: function(){
+                onEditingFinished: {
                     event.name = nameField.text;
                 }
             }
@@ -68,8 +66,6 @@ Dialog {
             TextField {
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.5
-                //anchors.centerIn: parent
-                //width: parent.width * 0.7
                 readOnly: true
                 placeholderText: qsTr("From date")
                 floatingLabel: true
@@ -79,7 +75,7 @@ Dialog {
                 width: Units.dp(40)
                 height: Units.dp(40)
                 iconName: "action/date_range"
-                onClicked: function() {
+                onClicked: {
                     datePickerDialog.field = "startDate";
                     datePickerDialog.show();
                 }
@@ -87,7 +83,7 @@ Dialog {
             Button {
                 Layout.preferredWidth: parent.width * 0.3
                 text: (new Date(Number(event.startDate))).toLocaleTimeString(Qt.locale(), qsTr("hh:mm ap"))
-                onClicked: function() {
+                onClicked: {
                     timePickerDialog.field = "startDate";
                     timePickerDialog.show();
                 }
@@ -101,8 +97,6 @@ Dialog {
             TextField {
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.5
-                //anchors.centerIn: parent
-                //width: parent.width * 0.7
                 readOnly: true
                 placeholderText: qsTr("To date")
                 floatingLabel: true
@@ -112,7 +106,7 @@ Dialog {
                 width: Units.dp(40)
                 height: Units.dp(40)
                 iconName: "action/date_range"
-                onClicked: function() {
+                onClicked: {
                     datePickerDialog.field = "endDate";
                     datePickerDialog.show();
                 }
@@ -120,7 +114,7 @@ Dialog {
             Button {
                 Layout.preferredWidth: parent.width * 0.3
                 text: (new Date(Number(event.endDate))).toLocaleTimeString(Qt.locale(), qsTr("hh:mm ap"))
-                onClicked: function() {
+                onClicked: {
                     timePickerDialog.field = "endDate";
                     timePickerDialog.show();
                 }
@@ -129,12 +123,14 @@ Dialog {
     }
 
     ListItem.Standard {
+        height: Units.dp(72)
         action: Icon {
             anchors.centerIn: parent
-            name: "navigation/refresh"
+            name: "action/restore"
         }
         content: RowLayout {
             width: parent.width
+            height: parent.height
             spacing: 6
             ComboBox {
                 Layout.fillWidth: true
@@ -142,16 +138,17 @@ Dialog {
                 id: repeatType
                 model: [qsTr("Once"), qsTr("Weekly"), qsTr("Monthly")]
                 currentIndex: event.type
-                onActivated: function(){
-                    event.type = currentIndex
-                    event.mask = ""
+                onActivated: {
+                    event.type = currentIndex;
+                    event.mask = "";
+                    event = event;
                 }
             }
             Grid {
+                columns: 3
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.preferredWidth: parent.width * 0.8
-                //anchors.fill: parent
                 id: weekDaySelector
                 Repeater {
                     model: 7
@@ -160,7 +157,7 @@ Dialog {
                         implicitHeight: Units.dp(24)
                         text: Qt.locale().standaloneDayName(modelData)
                         checked: event.mask.indexOf(modelData) !== -1
-                        onClicked: function() {
+                        onClicked: {
                             if (weekDayCheckBox.checked && (event.mask.indexOf(modelData) === -1))
                                 event.mask = event.mask + modelData + ' ';
                             if (weekDayCheckBox.checked === false && (event.mask.indexOf(modelData) !== -1))
@@ -173,13 +170,11 @@ Dialog {
             }
             ComboBox {
                 Layout.fillWidth: true
-                Layout.fillHeight: true
                 Layout.preferredWidth: parent.width * 0.3
                 id: monthDaySelector
-                //displayText: qsTr("%1 every month").arg(currentText)
                 model: Utils.getDayItems(new Date(Number(event.startDate)))
                 currentIndex: ( (event.mask === "") ? (new Date(Number(event.startDate))).getDate() : Number(event.mask) ) - 1
-                onActivated: function(){
+                onActivated: {
                     event.mask = (currentIndex + 1).toString();
                     event = event;
                 }
@@ -208,8 +203,6 @@ Dialog {
             Drag.dragType: Drag.Automatic
             Drag.supportedActions: Qt.CopyAction
             Drag.mimeData: {"text/uri-list": attachmentManager.getFileURI(event.name, event.mask)}
-            Drag.onDragStarted: function(event){
-            }
         }
         visible: event.type === 9
     }
@@ -220,10 +213,8 @@ Dialog {
         negativeButtonText: qsTr("Cancel")
         title: qsTr("Delete?")
         text: qsTr("Are your sure to delete this event?")
-        onAccepted: function(){
+        onAccepted: {
             action = "delete";
-            if (event.type === 9)
-                attachmentManager.removeFile(event.name, event.mask);
             eventEditingPopup.accepted();
             eventEditingPopup.close();
         }
@@ -241,7 +232,7 @@ Dialog {
             frameVisible: false
             dayAreaBottomMargin : Units.dp(48)
         }
-        onAccepted: function(){
+        onAccepted: {
             var a = new Date(Number(event[field]));
             a.setFullYear(datePicker.selectedDate.getFullYear());
             a.setMonth(datePicker.selectedDate.getMonth());
@@ -255,7 +246,7 @@ Dialog {
         property string field
         positiveButtonText: qsTr("Done")
         negativeButtonText: qsTr("Cancel")
-        onTimePicked: function(date){
+        onTimePicked: function (date){
             var a = new Date(Number(event[field]));
             a.setHours(date.getHours() );
             a.setMinutes(date.getMinutes() );
@@ -268,7 +259,6 @@ Dialog {
         id: colorPicker
         title: qsTr("Pick color")
         hasActions: false
-        //positiveButtonText: qsTr("Done")
         Grid {
             columns: 7
             spacing: Units.dp(8)

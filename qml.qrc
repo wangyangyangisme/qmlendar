@@ -4,8 +4,6 @@
         <file>qtquickcontrols2.conf</file>
         <file>PageMonth.qml</file>
         <file>DayGrid.qml</file>
-        <file>MySpinBox.qml</file>
-        <file>TestPage.qml</file>
         <file>Utils.js</file>
         <file>EventEditingPopup.qml</file>
     </qresource>

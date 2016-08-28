@@ -4,19 +4,21 @@
 #include <QObject>
 #include <QUrl>
 #include <QDate>
+#include <eventmanager.h>
 
 class AttachmentManager : public QObject
 {
     Q_OBJECT
 public:
+    QObject* eventManager;
     explicit AttachmentManager(QObject *parent = 0);
 
 signals:
 
 public slots:
-    QString AttachFile(QDateTime date, QUrl url);
+    void AttachFile(QDateTime date, QUrl url);
     QUrl getFileURI(QString name, QString fingerPrint);
-    void removeFile(QString name, QString fingerPrint);
+    void removeFile(QString fingerPrint);
 };
 
 #endif // ATTACHMENTMANAGER_H

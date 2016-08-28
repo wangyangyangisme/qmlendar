@@ -4,8 +4,9 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     attachmentmanager.cpp \
-    eventitem.cpp \
-    eventmanager.cpp
+    eventmanager.cpp \
+    applicationmanager.cpp \
+    thirdparty/qglobalshortcut/src/qglobalshortcut.cc
 
 RESOURCES += qml.qrc
 TRANSLATIONS = i18n/zh_CN.ts i18n/en_US.ts
@@ -18,8 +19,9 @@ include(deployment.pri)
 
 HEADERS += \
     attachmentmanager.h \
-    eventitem.h \
-    eventmanager.h
+    eventmanager.h \
+    applicationmanager.h \
+    thirdparty/qglobalshortcut/src/qglobalshortcut.h
 
 OTHER_FILES += \
     *.qml
@@ -27,3 +29,7 @@ OTHER_FILES += \
 lupdate_only{
     SOURCES = *.qml
 }
+
+win32:SOURCES += thirdparty/qglobalshortcut/src/qglobalshortcut_win.cc
+unix:SOURCES  += thirdparty/qglobalshortcut/src/qglobalshortcut_x11.cc
+macx:SOURCES  += thirdparty/qglobalshortcut/src/qglobalshortcut_macx.cc

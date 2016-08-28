@@ -3,10 +3,11 @@
 #include <QQuickStyle>
 #include <QQmlContext>
 #include <attachmentmanager.h>
-#include <eventitem.h>
 #include <eventmanager.h>
+#include <applicationmanager.h>
 #include <QTranslator>
 #include <QLocale>
+#include <QQuickView>
 
 int main(int argc, char *argv[])
 {
@@ -16,17 +17,20 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     QQuickStyle::setStyle("Material");
 
-    QTranslator qtTranslator;
-    //bool a = qtTranslator.load("zh_CN", "./i18n");
-    //app.installTranslator(&qtTranslator);
-    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
-
     AttachmentManager attachmentManager;
     engine.rootContext()->setContextProperty("attachmentManager", &attachmentManager);
 
     EventManager eventManager;
-    //eventManager.debug();
     engine.rootContext()->setContextProperty("eventManager", &eventManager);
+
+    eventManager.attachmentManager = &attachmentManager;
+    attachmentManager.eventManager = &eventManager;
+
+    ApplicationManager applicationManager;
+    applicationManager.addShortcut("lock", "Ctrl+L");
+    engine.rootContext()->setContextProperty("applicationManager", &applicationManager);
+
+    app.installTranslator(applicationManager.loadTranslate() );
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
 
